@@ -1,0 +1,32 @@
+# Render Blueprint — deploys the FastAPI backend (free tier).
+# DATABASE_URL (Neon) and FRONTEND_ORIGIN (Vercel URL) are set at deploy time.
+services:
+  - type: web
+    name: talentmatch-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      - key: QUEUE_BACKEND
+        value: inline
+      - key: STORAGE_BACKEND
+        value: local
+      - key: EMBEDDING_PROVIDER
+        value: local
+      - key: AUTO_CREATE_SCHEMA
+        value: "true"
+      - key: SEED_DEMO
+        value: "true"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
